@@ -108,10 +108,10 @@ bot.on("message", async (ctx) => {
     let errorMessage = "Unable to extract error";
     
     // Handle openai v4 APIError format
-    if ((error as any)?.error) {
-      errorMessage = (error as any).error;
-    } else if ((error as any)?.message) {
+    if ((error as any)?.message) {
       errorMessage = (error as any).message;
+    } else if ((error as any)?.error) {
+      errorMessage = (error as any).error;
     } else if ((error as any)?.response?.data?.error) {
       // Fallback to v3 format for backward compatibility
       errorMessage = (error as any).response.data.error;
