@@ -8,8 +8,7 @@ import {
 } from "langchain/prompts";
 import { BufferMemory } from "langchain/memory";
 import { ConversationChain } from "langchain/chains";
-import { Configuration } from "openai";
-import { OpenAIApi } from "openai";
+import { OpenAI } from "openai";
 
 const openAIApiKey = process.env.OPENAI_API_KEY!;
 
@@ -26,17 +25,15 @@ const params = {
 export class Model {
   public tools: Tool[] = [];
   public chain: ConversationChain;
-  public openai: OpenAIApi;
+  public openai: OpenAI;
 
   constructor() {
-    const configuration = new Configuration({
+    this.openai = new OpenAI({
       apiKey: openAIApiKey,
     });
+    const model = new ChatOpenAI(params);
 
-    this.openai = new OpenAIApi(configuration);
-    const model = new ChatOpenAI(params, configuration);
-
-    const chatPrompt = ChatPromptTemplate.fromPromptMessages([
+    const chatPrompt = ChatPromptTemplate.fromMessages([
       SystemMessagePromptTemplate.fromTemplate(
         "The following is a friendly conversation between a human and an AI. The AI is talkative and provides lots of specific details from its context. If the AI does not know the answer to a question, it truthfully says it does not know."
       ),
