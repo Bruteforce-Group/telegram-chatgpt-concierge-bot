@@ -1,4 +1,4 @@
-import { AgentExecutor, Tool, initializeAgentExecutor } from "langchain/agents";
+import { AgentExecutor, Tool, initializeAgentExecutorWithOptions } from "langchain/agents";
 import { ChatOpenAI } from "langchain/chat_models";
 import { BufferMemory } from "langchain/memory";
 import { OpenAI } from "openai";
@@ -32,11 +32,13 @@ export class Model {
 
   public async call(input: string) {
     if (!this.executor) {
-      this.executor = await initializeAgentExecutor(
+      this.executor = await initializeAgentExecutorWithOptions(
         this.tools,
         this.model,
-        "chat-conversational-react-description",
-        true
+        {
+          agentType: "chat-conversational-react-description",
+          verbose: true,
+        }
       );
       this.executor.memory = new BufferMemory({
         returnMessages: true,

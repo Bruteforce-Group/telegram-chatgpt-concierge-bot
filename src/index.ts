@@ -105,9 +105,19 @@ bot.on("message", async (ctx) => {
   } catch (error) {
     console.log(error);
 
-    const message = JSON.stringify(
-      (error as any)?.response?.data?.error ?? "Unable to extract error"
-    );
+    let errorMessage = "Unable to extract error";
+    
+    // Handle openai v4 APIError format
+    if ((error as any)?.error) {
+      errorMessage = (error as any).error;
+    } else if ((error as any)?.message) {
+      errorMessage = (error as any).message;
+    } else if ((error as any)?.response?.data?.error) {
+      // Fallback to v3 format for backward compatibility
+      errorMessage = (error as any).response.data.error;
+    }
+
+    const message = JSON.stringify(errorMessage);
 
     console.log({ message });
 
