@@ -8,8 +8,7 @@ import {
 } from "langchain/prompts";
 import { BufferMemory } from "langchain/memory";
 import { ConversationChain } from "langchain/chains";
-import { Configuration } from "openai";
-import { OpenAIApi } from "openai";
+import { OpenAI } from "openai";
 
 const openAIApiKey = process.env.OPENAI_API_KEY!;
 
@@ -26,15 +25,13 @@ const params = {
 export class Model {
   public tools: Tool[] = [];
   public chain: ConversationChain;
-  public openai: OpenAIApi;
+  public openai: OpenAI;
 
   constructor() {
-    const configuration = new Configuration({
+    this.openai = new OpenAI({
       apiKey: openAIApiKey,
     });
-
-    this.openai = new OpenAIApi(configuration);
-    const model = new ChatOpenAI(params, configuration);
+    const model = new ChatOpenAI(params);
 
     const chatPrompt = ChatPromptTemplate.fromPromptMessages([
       SystemMessagePromptTemplate.fromTemplate(

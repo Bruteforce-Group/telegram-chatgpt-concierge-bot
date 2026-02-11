@@ -1,8 +1,7 @@
 import { AgentExecutor, Tool, initializeAgentExecutor } from "langchain/agents";
 import { ChatOpenAI } from "langchain/chat_models";
 import { BufferMemory } from "langchain/memory";
-import { Configuration } from "openai";
-import { OpenAIApi } from "openai";
+import { OpenAI } from "openai";
 import { googleTool } from "./tools/google";
 
 const openAIApiKey = process.env.OPENAI_API_KEY!;
@@ -20,17 +19,15 @@ const params = {
 export class Model {
   public tools: Tool[];
   public executor?: AgentExecutor;
-  public openai: OpenAIApi;
+  public openai: OpenAI;
   public model: ChatOpenAI;
 
   constructor() {
-    const configuration = new Configuration({
+    this.tools = [googleTool];
+    this.openai = new OpenAI({
       apiKey: openAIApiKey,
     });
-
-    this.tools = [googleTool];
-    this.openai = new OpenAIApi(configuration);
-    this.model = new ChatOpenAI(params, configuration);
+    this.model = new ChatOpenAI(params);
   }
 
   public async call(input: string) {
